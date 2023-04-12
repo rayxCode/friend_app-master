@@ -26,7 +26,7 @@ String dir_bgF4 = "assets/kent_bg.jpg";
 String gLogo = "assets/glogo.png";
 String fLogo = "assets/flogo.png";
 String yLogo = "assets/ylogo.png";
-bool isLogin_view = true;
+bool isLogin_view = false;
 
 // Description according to order
 String descHome =

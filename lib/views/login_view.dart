@@ -1,4 +1,9 @@
+import 'dart:math';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:friend_activity/controller/auth_controller.dart';
 import 'package:friend_activity/util/string_controller.dart';
 import 'package:friend_activity/views/profile_view.dart';
 
@@ -13,6 +18,11 @@ class LoginViewState extends State<LoginView> {
   String textForm = "Dont have an account? Sign up here",
       buttonTxtform = "LOGIN";
   bool trigger = true;
+  bool isNotLogin = true;
+  final passController = TextEditingController();
+  final userController = TextEditingController();
+  var authHandler = new Auth();
+
   windowChange() {
     if (trigger) {
       trigger = false;
@@ -66,12 +76,13 @@ class LoginViewState extends State<LoginView> {
                   ],
                 ),
               ),
-              const SizedBox(
+              SizedBox(
                 width: 400,
                 height: 55,
                 child: TextField(
                   obscureText: false,
-                  decoration: InputDecoration(
+                  controller: userController,
+                  decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.account_circle_outlined),
                     labelText: 'Username',
                   ),
@@ -80,12 +91,13 @@ class LoginViewState extends State<LoginView> {
               const SizedBox(
                 height: 10,
               ),
-              const SizedBox(
+              SizedBox(
                 width: 400,
                 height: 55,
                 child: TextField(
                   obscureText: true,
-                  decoration: InputDecoration(
+                  controller: passController,
+                  decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.lock),
                     labelText: 'Password',
                   ),
@@ -103,18 +115,19 @@ class LoginViewState extends State<LoginView> {
                 width: 400,
                 height: 50,
                 child: TextButton(
-                  onPressed: () => {
-                    Profile(
-                      imageAV: dir_avH,
-                      imageBG: dir_bgH,
-                      profName: homeProfilen,
-                      descProf: descHome,
-                      status: occupation,
-                      upload: 7.toString(),
-                      ff: 6.toString(),
-                      ffw: 9.toString(),
-                    ),
-                  },
+                  onPressed: () =>
+                    isNotLogin ? authHandler.Login(userController.text, passController.text).then((User user) {
+                      Navigator.push(context, new MaterialPageRoute(builder: (context) => new Profile(
+                imageAV: dir_avH,
+                imageBG: dir_bgH,
+                profName: homeProfilen,
+                descProf: descHome,
+                status: occupation,
+                upload: 7.toString(),
+                ff: 6.toString(),
+                ffw: 9.toString(),
+                )
+              ));}).catchError((e) => SnackBar(content: Text(e.toString()))): authHandler.SignUp(userController.text, passController.text). ,
                   style: TextButton.styleFrom(
                       backgroundColor: Colors.deepPurpleAccent,
                       foregroundColor: Colors.white),
@@ -194,7 +207,7 @@ class LoginViewState extends State<LoginView> {
               ),
               const SizedBox(
                 height: 20,
-              ),
+              )
             ],
           ),
         ),
